@@ -64,7 +64,7 @@ func requireAdminOrPrivate(b *gotgbot.Bot, ctx *ext.Context, deniedMessage strin
 }
 
 func (h *CommandHandler) Start(b *gotgbot.Bot, ctx *ext.Context) error {
-	msg := `<b>Welcome to the GitHub Bot!</b> 🤖
+	msg := `<b>Welcome to the Archon LabBot!</b> 🤖
 
 I can help you manage your GitHub repositories and notifications directly from Telegram.
 
@@ -555,7 +555,7 @@ func (h *CommandHandler) Help(b *gotgbot.Bot, ctx *ext.Context) error {
 /settings - Configure event notifications
 
 <b>Need more help?</b>
-Visit the <a href="https://github.com/bisug/TG-GithubBot">GitHub repository</a> for more details.`
+Visit the <a href="https://t.me/ArchonCare">Support Group</a> for more details.`
 
 	_, err := ctx.EffectiveMessage.Reply(b, msg, &gotgbot.SendMessageOpts{ParseMode: "HTML", LinkPreviewOptions: &gotgbot.LinkPreviewOptions{IsDisabled: true}})
 	return err
@@ -584,7 +584,7 @@ We value your privacy and are committed to protecting your data. This policy out
 • <b>Removal:</b> You can remove repositories using /removerepo. To request full data deletion, please contact the developer or simply block the bot.
 
 <b>5. Contact</b>
-If you have questions or concerns, please visit our <a href="https://github.com/bisug/TG-GithubBot">GitHub repository</a> or open an issue there.`
+If you have questions or concerns, please visit our <a href="https://t.me/ArchonNetwork">Support Channel</a> or open an issue there.`
 
 	_, err := ctx.EffectiveMessage.Reply(b, msg, &gotgbot.SendMessageOpts{ParseMode: "HTML", LinkPreviewOptions: &gotgbot.LinkPreviewOptions{IsDisabled: true}})
 	return err
