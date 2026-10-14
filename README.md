@@ -10,7 +10,7 @@ TG-GithubBot is a self-hosted Telegram bot that links GitHub repositories to Tel
 ### One-Click Deploy
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/bisug/TG-GithubBot)
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://www.heroku.com/deploy?template=https://github.com/bisug/TG-GithubBot)
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://www.heroku.com/deploy?template=https://github.com/notreallysrk/TG-GithubBot)
 [![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/deploy?type=git&builder=docker&repository=github.com/bisug/TG-GithubBot&branch=master&name=tg-githubbot)
 
 > [!NOTE]
