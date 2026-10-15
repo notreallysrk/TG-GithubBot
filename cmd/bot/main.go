@@ -105,6 +105,7 @@ func run() (runErr error) {
 	dispatcher.AddHandler(handlers.NewCommand("config", cmdHandler.Settings))
 	dispatcher.AddHandler(handlers.NewCommand("settings", cmdHandler.Settings))
 	dispatcher.AddHandler(handlers.NewCommand("help", cmdHandler.Help))
+	dispatcher.AddHandler(handlers.NewCommand("stats", cmdHandler.Stats))
 	dispatcher.AddHandler(handlers.NewCommand("privacy", cmdHandler.Privacy))
 	dispatcher.AddHandler(handlers.NewCommand("reload", cmdHandler.Reload))
 	dispatcher.AddHandler(handlers.NewCommand("logout", cmdHandler.Logout))
