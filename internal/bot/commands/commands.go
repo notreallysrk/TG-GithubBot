@@ -553,11 +553,29 @@ func (h *CommandHandler) Help(b *gotgbot.Bot, ctx *ext.Context) error {
 
 <b>Configuration</b>
 /settings - Configure event notifications
+/stats - Show bot statistics
 
 <b>Need more help?</b>
 Visit the <a href="https://t.me/ArchonCare">Support Group</a> for more details.`
 
 	_, err := ctx.EffectiveMessage.Reply(b, msg, &gotgbot.SendMessageOpts{ParseMode: "HTML", LinkPreviewOptions: &gotgbot.LinkPreviewOptions{IsDisabled: true}})
+	return err
+}
+
+// Stats reports aggregate bot usage stored in MongoDB.
+func (h *CommandHandler) Stats(b *gotgbot.Bot, ctx *ext.Context) error {
+	statsCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	stats, err := h.DB.GetBotStats(statsCtx)
+	if err != nil {
+		slog.Error("Failed to load bot stats", "error", err)
+		_, replyErr := ctx.EffectiveMessage.Reply(b, "⚠️ Stats are temporarily unavailable. Please try again shortly.", nil)
+		return replyErr
+	}
+
+	msg := fmt.Sprintf(`<b>📊 Bot Statistics</b>\n\n<b>Connected GitHub Accounts:</b> <code>%d</code>\n<b>Chats Tracked:</b> <code>%d</code>\n<b>Linked Repository Entries:</b> <code>%d</code>`, stats.ConnectedUsers, stats.Chats, stats.LinkedRepos)
+	_, err = ctx.EffectiveMessage.Reply(b, msg, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 	return err
 }
 
