@@ -574,7 +574,7 @@ func (h *CommandHandler) Stats(b *gotgbot.Bot, ctx *ext.Context) error {
 		return replyErr
 	}
 
-	msg := fmt.Sprintf(`<b>📊 Bot Statistics</b>\n\n<b>Connected GitHub Accounts:</b> <code>%d</code>\n<b>Chats Tracked:</b> <code>%d</code>\n<b>Linked Repository Entries:</b> <code>%d</code>`, stats.ConnectedUsers, stats.Chats, stats.LinkedRepos)
+	msg := fmt.Sprintf("<b>📊 Bot Statistics</b>\n\n<b>Connected GitHub Accounts:</b> <code>%d</code>\n<b>Chats Tracked:</b> <code>%d</code>\n<b>Linked Repository Entries:</b> <code>%d</code>", stats.ConnectedUsers, stats.Chats, stats.LinkedRepos)
 	_, err = ctx.EffectiveMessage.Reply(b, msg, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 	return err
 }
