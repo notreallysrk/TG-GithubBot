@@ -29,6 +29,53 @@ type DB struct {
 	chatLinksMu    [64]sync.Mutex // bounded stripes serialize cache fills and link writes
 }
 
+// BotStats contains aggregate statistics that can be safely shown by /stats.
+type BotStats struct {
+	ConnectedUsers int64
+	Chats          int64
+	LinkedRepos    int64
+}
+
+// GetBotStats returns live totals from MongoDB. ConnectedUsers counts Telegram
+// accounts that linked GitHub; Chats counts chats observed by the bot; LinkedRepos
+// counts repository links across those chats.
+func (d *DB) GetBotStats(ctx context.Context) (BotStats, error) {
+	var stats BotStats
+	users, err := d.Users.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return stats, fmt.Errorf("count connected users: %w", err)
+	}
+	chats, err := d.Chats.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return stats, fmt.Errorf("count chats: %w", err)
+	}
+	stats.ConnectedUsers = users
+	stats.Chats = chats
+
+	pipeline := mongo.Pipeline{
+		{{Key: "$unwind", Value: "$links"}},
+		{{Key: "$count", Value: "total"}},
+	}
+	cursor, err := d.Chats.Aggregate(ctx, pipeline)
+	if err != nil {
+		return stats, fmt.Errorf("count linked repositories: %w", err)
+	}
+	defer cursor.Close(ctx)
+	if cursor.Next(ctx) {
+		var result struct {
+			Total int64 `bson:"total"`
+		}
+		if err := cursor.Decode(&result); err != nil {
+			return stats, fmt.Errorf("decode repository count: %w", err)
+		}
+		stats.LinkedRepos = result.Total
+	}
+	if err := cursor.Err(); err != nil {
+		return stats, fmt.Errorf("read repository count: %w", err)
+	}
+	return stats, nil
+}
+
 // ErrLinkNotFound is returned by GetRepoLink/GetRepoLinkByWebhookID when the
 // chat exists but the repository is not linked. Callers use errors.Is to
 // distinguish "not linked" from a real database failure.
