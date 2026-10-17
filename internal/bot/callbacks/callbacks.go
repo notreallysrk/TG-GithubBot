@@ -184,13 +184,19 @@ func (h *CallbackHandler) HandleSettings(b *gotgbot.Bot, ctx *ext.Context) error
 			return h.showRepoList(b, ctx)
 		}
 		if action == cbAddRepo {
-			if len(parts) < 4 {
+			// The search callback is c:ar:search (3 parts); page and ID
+			// callbacks additionally carry a fourth value.
+			if len(parts) < 3 {
 				slog.Warn("Ignoring malformed add-repo callback data", "data", data)
 				_, _ = ctx.CallbackQuery.Answer(b, &gotgbot.AnswerCallbackQueryOpts{Text: "Invalid request."})
 				return nil
 			}
 			subAction := parts[2]
 			if subAction == "pg" {
+				if len(parts) < 4 {
+					_, _ = ctx.CallbackQuery.Answer(b, &gotgbot.AnswerCallbackQueryOpts{Text: "Invalid page."})
+					return nil
+				}
 				page, ok := parsePositiveInt(parts[3])
 				if !ok {
 					_, _ = ctx.CallbackQuery.Answer(b, &gotgbot.AnswerCallbackQueryOpts{Text: "Invalid page."})
@@ -199,6 +205,10 @@ func (h *CallbackHandler) HandleSettings(b *gotgbot.Bot, ctx *ext.Context) error
 				return h.handleRepoPage(b, ctx, page)
 			}
 			if subAction == "id" {
+				if len(parts) < 4 {
+					_, _ = ctx.CallbackQuery.Answer(b, &gotgbot.AnswerCallbackQueryOpts{Text: "Invalid repository ID."})
+					return nil
+				}
 				repoID, err := strconv.ParseInt(parts[3], 10, 64)
 				if err != nil || repoID <= 0 {
 					_, _ = ctx.CallbackQuery.Answer(b, &gotgbot.AnswerCallbackQueryOpts{Text: "Invalid repository ID."})
